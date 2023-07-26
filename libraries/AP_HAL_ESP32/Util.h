@@ -19,6 +19,7 @@
 #include <AP_HAL/AP_HAL.h>
 #include "HAL_ESP32_Namespace.h"
 #include "AP_HAL_ESP32.h"
+#include "hal/ledc_types.h"
 
 class ESP32::Util : public AP_HAL::Util
 {
@@ -55,8 +56,10 @@ public:
     bool get_system_id_unformatted(uint8_t buf[], uint8_t &len) override;
 
 #ifdef HAL_PWM_ALARM
-    bool toneAlarm_init() override;
+#ifdef HAL_PWM_BUZZER_PIN
+    bool toneAlarm_init();
     void toneAlarm_set_buzzer_tone(float frequency, float volume, uint32_t duration_ms) override;
+#endif
 #endif
 
     // return true if the reason for the reboot was a watchdog reset
@@ -69,13 +72,14 @@ public:
 
 private:
 #ifdef HAL_PWM_ALARM
+#ifdef HAL_PWM_BUZZER_PIN
     struct ToneAlarmPwmGroup {
-        pwmchannel_t chan;
-        PWMConfig pwm_cfg;
-        PWMDriver* pwm_drv;
+        ledc_timer_config_t timer_config;
+        ledc_channel_config_t channel_config;
     };
 
     static ToneAlarmPwmGroup _toneAlarm_pwm_group;
+#endif
 #endif
 
     /*

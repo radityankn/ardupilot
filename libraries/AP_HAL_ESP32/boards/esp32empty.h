@@ -68,10 +68,10 @@
 
 //IMUs
 #define INS_AUX_INSTANCE			2
-#define HAL_INS_DEFAULT				HAL_INS_MPU6500_SPI
-#define HAL_INS_MPU6500_NAME 		"mpu6500"
+#define HAL_INS_DEFAULT				HAL_INS_MPU9250_SPI
+#define HAL_INS_MPU9250_NAME 		"mpu9250"
 #define HAL_INS_BMI160_NAME 		"bmi160"
-#define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU6500_NAME, ROTATION_NONE); \
+#define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_NONE); \
 											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180_YAW_270)
 
 //I2C Buses
@@ -81,14 +81,14 @@
 #define HAL_ESP32_SPI_BUSES				{.host=VSPI_HOST, .dma_ch=1, .mosi=GPIO_NUM_19, .miso=GPIO_NUM_23, .sclk=GPIO_NUM_18}
 
 //SPI Devices
-#define HAL_ESP32_SPI_DEVICES				{.name=HAL_INS_MPU6500_NAME, .bus=0, .device=0, .cs=GPIO_NUM_17, .mode=0, .lspeed=4*MHZ, .hspeed=8*MHZ}, \
-													{.name=HAL_INS_BMI160_NAME, .bus=0, .device=1, .cs=GPIO_NUM_5, .mode=0, .lspeed=4*MHZ, .hspeed=8*MHZ}
+#define HAL_ESP32_SPI_DEVICES				{.name=HAL_INS_MPU9250_NAME, .bus=0, .device=0, .cs=GPIO_NUM_17, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ}, \
+													{.name=HAL_INS_BMI160_NAME, .bus=0, .device=1, .cs=GPIO_NUM_5, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ}
 
 //RCIN
 #define HAL_ESP32_RCIN					GPIO_NUM_13
 
 //RCOUT
-#define HAL_ESP32_RCOUT					{ GPIO_NUM_32, GPIO_NUM_33, GPIO_NUM_25, GPIO_NUM_26, GPIO_NUM_27, GPIO_NUM_14}
+#define HAL_ESP32_RCOUT					{ GPIO_NUM_32, GPIO_NUM_33, GPIO_NUM_25, GPIO_NUM_26}
 
 //BAROMETER
 #define HAL_BARO_ALLOW_INIT_NO_BARO			1
@@ -103,7 +103,7 @@
 #define HAL_PROBE_EXTERNAL_I2C_COMPASSES 	1
 
 //WIFI
-#define HAL_ESP32_WIFI					2	//1-TCP, 2-UDP, comment this line = without wifi
+#define HAL_ESP32_WIFI					1	//1-TCP, 2-UDP, comment this line = without wifi
 #define WIFI_SSID					"ardupilot-empty"
 #define WIFI_PWD					"ardupilot-empty"
 
@@ -125,9 +125,9 @@
 #define HAL_GPIO_B_LED_PIN                  27
 
 //Buzzer Pin
-#define BUZZER_ENABLE_DEFAULT		 1		//Enabling internal buzzer, see AP_Notify.cpp
-#define BUILD_DEFAULT_BUZZER_TYPE Notify_Buzz_Builtin		//Buzzer type -> Internal Buzzer
-#define HAL_BUZZER_PIN				-1 	//-1 for disabling the buzzer
+//#define BUZZER_ENABLE_DEFAULT		 1		//Enabling internal buzzer, see AP_Notify.cpp
+//#define BUILD_DEFAULT_BUZZER_TYPE Notify_Buzz_Builtin		//Buzzer type -> Internal Buzzer
+//#define HAL_BUZZER_PIN				14 	//-1 for disabling the buzzer
 
 //RMT pin number
 #define HAL_ESP32_RMT_RX_PIN_NUMBER			-1
@@ -152,4 +152,8 @@
 #define HAL_BOARD_TERRAIN_DIRECTORY			"/SDCARD/APM/TERRAIN"
 
 #define HAL_LOGGING_BACKENDS_DEFAULT			1
+#define HAL_PWM_ALARM								1
+#define HAL_PWM_BUZZER_PIN							14
+#define HAL_GPIO_SAFETY_IN					0			
+//#define HAL_GPIO_PIN_LED_SAFETY
 
