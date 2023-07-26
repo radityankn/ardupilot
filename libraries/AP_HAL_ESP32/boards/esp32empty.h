@@ -72,7 +72,7 @@
 #define HAL_INS_MPU9250_NAME 		"mpu9250"
 #define HAL_INS_BMI160_NAME 		"bmi160"
 #define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_NONE); \
-											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180_YAW_270)
+											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_YAW_270)
 
 //I2C Buses
 #define HAL_ESP32_I2C_BUSES				{.port=I2C_NUM_0, .sda=GPIO_NUM_21, .scl=GPIO_NUM_22, .speed=400*KHZ, .internal=true, .soft=true}
@@ -88,7 +88,7 @@
 #define HAL_ESP32_RCIN					GPIO_NUM_13
 
 //RCOUT
-#define HAL_ESP32_RCOUT					{ GPIO_NUM_32, GPIO_NUM_33, GPIO_NUM_25, GPIO_NUM_26}
+#define HAL_ESP32_RCOUT					{ GPIO_NUM_32, GPIO_NUM_33, GPIO_NUM_25, GPIO_NUM_26, GPIO_NUM_27}
 
 //BAROMETER
 #define HAL_BARO_ALLOW_INIT_NO_BARO			1
@@ -114,15 +114,21 @@
     {.port=UART_NUM_2, .rx=GPIO_NUM_35, .tx=GPIO_NUM_19}
 
 //ADC
-#define HAL_DISABLE_ADC_DRIVER				1
-#define HAL_USE_ADC								0
+//#define HAL_DISABLE_ADC_DRIVER				0
+#define HAL_USE_ADC								1
+#define HAL_ESP32_ADC_PINS_OPTION2 {\
+	{ADC1_GPIO39_CHANNEL, 11, 39},\
+	{ADC1_GPIO36_CHANNEL, 11, 36}\
+}
+#define HAL_ESP32_ADC_PINS HAL_ESP32_ADC_PINS_OPTION2
+
 
 //LED
-#define DEFAULT_NTF_LED_TYPES				Notify_LED_Board
+#define DEFAULT_NTF_LED_TYPES				Notify_LED_None
 #define HAL_GPIO_LED_ON                     1
 #define HAL_GPIO_LED_OFF                    0
-#define HAL_GPIO_A_LED_PIN                  2
-#define HAL_GPIO_B_LED_PIN                  27
+//#define HAL_GPIO_A_LED_PIN                  2
+//#define HAL_GPIO_B_LED_PIN                  27
 
 //Buzzer Pin
 //#define BUZZER_ENABLE_DEFAULT		 1		//Enabling internal buzzer, see AP_Notify.cpp
@@ -154,6 +160,5 @@
 #define HAL_LOGGING_BACKENDS_DEFAULT			1
 #define HAL_PWM_ALARM								1
 #define HAL_PWM_BUZZER_PIN							14
-#define HAL_GPIO_SAFETY_IN					0			
-//#define HAL_GPIO_PIN_LED_SAFETY
+#define HAL_GPIO_PIN_SAFETY_IN					2			
 

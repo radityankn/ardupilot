@@ -20,6 +20,7 @@
 #include "HAL_ESP32_Namespace.h"
 #include "AP_HAL_ESP32.h"
 #include "hal/ledc_types.h"
+#include "AP_Notify/AP_Notify.h"
 
 class ESP32::Util : public AP_HAL::Util
 {
@@ -55,11 +56,10 @@ public:
     bool get_system_id(char buf[50]) override;
     bool get_system_id_unformatted(uint8_t buf[], uint8_t &len) override;
 
-#ifdef HAL_PWM_ALARM
-#ifdef HAL_PWM_BUZZER_PIN
-    bool toneAlarm_init();
+#if HAL_PWM_ALARM == TRUE
+    bool toneAlarm_init(uint8_t types) override;
     void toneAlarm_set_buzzer_tone(float frequency, float volume, uint32_t duration_ms) override;
-#endif
+    static uint8_t _toneAlarm_types;
 #endif
 
     // return true if the reason for the reboot was a watchdog reset

@@ -35,9 +35,8 @@
 #include "esp_heap_caps.h"
 #include "driver/ledc.h"
 
-#if (defined(HAL_PWM_ALARM) && defined (HAL_PWM_BUZZER_PIN))
-#include <AP_Notify/AP_Notify.h>
-#endif
+//#if (defined(HAL_PWM_ALARM) && defined (HAL_PWM_BUZZER_PIN))
+
 
 
 extern const AP_HAL::HAL& hal;
@@ -157,22 +156,21 @@ Util::safety_state Util::safety_switch_state(void)
     return SAFETY_NONE;
 #endif
 }
-#ifdef HAL_PWM_ALARM
-#ifdef HAL_PWM_BUZZER_PIN
+#if HAL_PWM_ALARM == TRUE
 ledc_timer_config_t timer = {
-	.speed_mode = LEDC_LOW_SPEED_MODE,
+	.speed_mode = LEDC_HIGH_SPEED_MODE,
 	.duty_resolution = LEDC_TIMER_8_BIT,  
 	.timer_num 	= LEDC_TIMER_0,
-	.freq_hz	= 0,
+	.freq_hz	= 10,
 	.clk_cfg = LEDC_AUTO_CLK
 };
 
 ledc_channel_config_t channel = {
 	.gpio_num = HAL_PWM_BUZZER_PIN,
-	.speed_mode = LEDC_LOW_SPEED_MODE,
+	.speed_mode = LEDC_HIGH_SPEED_MODE,
 	.channel = LEDC_CHANNEL_0,
 	.timer_sel = LEDC_TIMER_0,
-	.duty = 512,
+	.duty = 100,
 	.hpoint = 0,
 };
 
@@ -181,25 +179,25 @@ struct Util::ToneAlarmPwmGroup Util::_toneAlarm_pwm_group = {
 	.channel_config = channel
 };
 
-bool Util::toneAlarm_init()
+bool Util::toneAlarm_init(uint8_t types)
 {
     ledc_channel_config(&_toneAlarm_pwm_group.channel_config);
     ledc_timer_config(&_toneAlarm_pwm_group.timer_config);
+    ledc_stop(_toneAlarm_pwm_group.channel_config.speed_mode, _toneAlarm_pwm_group.channel_config.channel, 0);
     return true;
 }
 
 void Util::toneAlarm_set_buzzer_tone(float frequency, float volume, uint32_t duration_ms)
 {
-    if (frequency == 0 || volume == 0){
+    if (frequency == 0){
     	ledc_stop(_toneAlarm_pwm_group.channel_config.speed_mode, _toneAlarm_pwm_group.channel_config.channel, 0);
     }
     else {
     	ledc_set_freq(_toneAlarm_pwm_group.timer_config.speed_mode, _toneAlarm_pwm_group.timer_config.timer_num, (uint32_t)frequency); 
-    	ledc_set_duty(_toneAlarm_pwm_group.channel_config.speed_mode, _toneAlarm_pwm_group.channel_config.channel,(uint32_t)volume*255); 
+    	ledc_set_duty(_toneAlarm_pwm_group.channel_config.speed_mode, _toneAlarm_pwm_group.channel_config.channel,(uint32_t)volume*50); 
 		ledc_update_duty(_toneAlarm_pwm_group.channel_config.speed_mode, _toneAlarm_pwm_group.channel_config.channel);    
     }
 }
-#endif
 #endif // HAL_PWM_ALARM
 
 /*

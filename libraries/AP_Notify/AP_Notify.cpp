@@ -439,6 +439,11 @@ void AP_Notify::add_backends(void)
 #endif
 #endif // Noise makers
 
+//ESP32 Noise Maker
+#ifdef HAL_PWM_ALARM
+    ADD_BACKEND(new AP_ToneAlarm());
+#endif
+
 }
 
 // initialisation
