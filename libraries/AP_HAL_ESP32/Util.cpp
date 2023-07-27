@@ -161,7 +161,7 @@ ledc_timer_config_t timer = {
 	.speed_mode = LEDC_HIGH_SPEED_MODE,
 	.duty_resolution = LEDC_TIMER_8_BIT,  
 	.timer_num 	= LEDC_TIMER_0,
-	.freq_hz	= 10,
+	.freq_hz	= 1,
 	.clk_cfg = LEDC_AUTO_CLK
 };
 

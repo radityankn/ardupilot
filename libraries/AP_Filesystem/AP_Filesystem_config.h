@@ -5,7 +5,9 @@
 #include <AP_Mission/AP_Mission_config.h>
 
 #if HAL_OS_POSIX_IO || HAL_OS_FATFS_IO
+#ifndef HAVE_FILESYSTEM_SUPPORT 
 #define HAVE_FILESYSTEM_SUPPORT 1
+#endif
 #else
 #define HAVE_FILESYSTEM_SUPPORT 0
 #endif
