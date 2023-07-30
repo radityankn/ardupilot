@@ -160,7 +160,5 @@
 
 #define HAL_LOGGING_BACKENDS_DEFAULT			1
 #define AP_NOTIFY_TONEALARM_ENABLED			1			//this definition is for activating ToneAlarm
-#define HAL_PWM_BUZZER_PIN				14			//pin of where your ToneAlarm buzzer is
-#define HAL_GPIO_PIN_SAFETY_IN			2
-#define HAL_GPIO_PIN_LED_SAFETY			0			
+#define HAL_PWM_BUZZER_PIN				14			//pin of where your ToneAlarm buzzer is			
 
