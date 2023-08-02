@@ -70,9 +70,9 @@
 #define INS_AUX_INSTANCE			2
 #define HAL_INS_DEFAULT				HAL_INS_MPU9250_SPI
 #define HAL_INS_MPU9250_NAME 		"mpu9250"
-#define HAL_INS_BMI160_NAME 		"bmi160"
+//#define HAL_INS_BMI160_NAME 		"bmi160"
 #define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_NONE); \
-											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180_YAW_90)
+//											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180_YAW_90)
 
 //I2C Buses
 #define HAL_ESP32_I2C_BUSES				{.port=I2C_NUM_0, .sda=GPIO_NUM_21, .scl=GPIO_NUM_22, .speed=400*KHZ, .internal=true, .soft=true}
@@ -82,7 +82,7 @@
 
 //SPI Devices
 #define HAL_ESP32_SPI_DEVICES				{.name=HAL_INS_MPU9250_NAME, .bus=0, .device=0, .cs=GPIO_NUM_17, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ}, \
-													{.name=HAL_INS_BMI160_NAME, .bus=0, .device=1, .cs=GPIO_NUM_5, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ}
+//													{.name=HAL_INS_BMI160_NAME, .bus=0, .device=1, .cs=GPIO_NUM_5, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ}
 
 //RCIN
 #define HAL_ESP32_RCIN					GPIO_NUM_13
@@ -99,15 +99,16 @@
 #define HAL_COMPASS_MAX_SENSORS				3
 #define AP_COMPASS_QMC5883L_ENABLED			1
 #define AP_COMPASS_AK8963_ENABLED 			1
-#define HAL_MAG_PROBE_LIST PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_NONE);\
-									PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_NONE)
+#define HAL_MAG_PROBE_LIST PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_NONE); \
+//									PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_NONE)
+									
 #define ALLOW_ARM_NO_COMPASS					1
 #define HAL_PROBE_EXTERNAL_I2C_COMPASSES 	1
 
 //WIFI
-#define HAL_ESP32_WIFI					1	//1-TCP, 2-UDP, comment this line = without wifi
-#define WIFI_SSID					"ardupilot-empty"
-#define WIFI_PWD					"ardupilot-empty"
+//#define HAL_ESP32_WIFI					1	//1-TCP, 2-UDP, comment this line = without wifi
+//#define WIFI_SSID					"ardupilot-empty"
+//#define WIFI_PWD					"ardupilot-empty"
 
 //UARTs
 #define HAL_ESP32_UART_DEVICES \
