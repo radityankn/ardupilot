@@ -26,6 +26,10 @@
 #define TRUE						1
 #define FALSE						0
 
+//Compass driver initialization
+#define AP_COMPASS_QMC5883L_ENABLED			1
+#define AP_COMPASS_AK8963_ENABLED   		1
+
 #define PROBE_IMU_SPI(driver, devname, args ...) ADD_BACKEND(AP_InertialSensor_ ## driver::probe(*this,hal.spi->get_device(devname),##args))
 #define PROBE_BARO_I2C(driver, bus, addr, args ...) ADD_BACKEND(AP_Baro_ ## driver::probe(*this,std::move(GET_I2C_DEVICE(bus, addr)),##args))
 #define PROBE_MAG_I2C(driver, bus, addr, args ...) ADD_BACKEND(DRIVER_ ##driver, AP_Compass_ ## driver::probe(GET_I2C_DEVICE(bus, addr),##args))
@@ -42,7 +46,7 @@
 //#define DEFAULT_SERIAL1_PROTOCOL				SerialProtocol_MAVLink2			//C	WiFi:  TCP, UDP, or disable (depends on HAL_ESP32_WIFI)
 //#define DEFAULT_SERIAL1_BAUD				AP_SERIALMANAGER_MAVLINK_BAUD/1000	//57600
 
-//#define DEFAULT_SERIAL2_PROTOCOL				SerialProtocol_GPS		//D	UART2: Always: MAVLink2 on ESP32
+//#define DEFAULT_SERIAL2_PROTOCOL				SerialProtocol_MAVLINK2		//D	UART2: Always: MAVLink2 on ESP32
 //#define DEFAULT_SERIAL2_BAUD				AP_SERIALMANAGER_MAVLINK_BAUD/1000	//57600
 
 //#define DEFAULT_SERIAL3_PROTOCOL				SerialProtocol_GPS			//B	UART1: GPS1
@@ -70,25 +74,27 @@
 #define INS_AUX_INSTANCE			2
 #define HAL_INS_DEFAULT				HAL_INS_MPU9250_SPI
 #define HAL_INS_MPU9250_NAME 		"mpu9250"
-//#define HAL_INS_BMI160_NAME 		"bmi160"
+#define HAL_INS_BMI160_NAME 		"bmi160"
+//#define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_YAW_90); \
+//												PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180)
 #define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_NONE); \
-//											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180_YAW_90)
+											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180_YAW_90)
 
 //I2C Buses
 #define HAL_ESP32_I2C_BUSES				{.port=I2C_NUM_0, .sda=GPIO_NUM_21, .scl=GPIO_NUM_22, .speed=400*KHZ, .internal=true, .soft=true}
 
 //SPI Buses
-#define HAL_ESP32_SPI_BUSES				{.host=VSPI_HOST, .dma_ch=1, .mosi=GPIO_NUM_19, .miso=GPIO_NUM_23, .sclk=GPIO_NUM_18}
+#define HAL_ESP32_SPI_BUSES				{.host=VSPI_HOST, .dma_ch=1, .mosi=GPIO_NUM_23, .miso=GPIO_NUM_19, .sclk=GPIO_NUM_18} 	// mosi/miso swapped
 
 //SPI Devices
 #define HAL_ESP32_SPI_DEVICES				{.name=HAL_INS_MPU9250_NAME, .bus=0, .device=0, .cs=GPIO_NUM_17, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ}, \
-//													{.name=HAL_INS_BMI160_NAME, .bus=0, .device=1, .cs=GPIO_NUM_5, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ}
+												   {.name=HAL_INS_BMI160_NAME, .bus=0, .device=1, .cs=GPIO_NUM_5, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ}
 
 //RCIN
 #define HAL_ESP32_RCIN					GPIO_NUM_13
 
 //RCOUT
-#define HAL_ESP32_RCOUT					{ GPIO_NUM_32, GPIO_NUM_33, GPIO_NUM_25, GPIO_NUM_26, GPIO_NUM_27}
+#define HAL_ESP32_RCOUT					{GPIO_NUM_32, GPIO_NUM_33, GPIO_NUM_25, GPIO_NUM_26, GPIO_NUM_27}
 
 //BAROMETER
 #define HAL_BARO_ALLOW_INIT_NO_BARO			1
@@ -97,18 +103,18 @@
 
 //COMPASS
 #define HAL_COMPASS_MAX_SENSORS				3
-#define AP_COMPASS_QMC5883L_ENABLED			1
-#define AP_COMPASS_AK8963_ENABLED 			1
-#define HAL_MAG_PROBE_LIST PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_NONE); \
-//									PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_NONE)
+//#define HAL_MAG_PROBE_LIST PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_YAW_180); \
+//									PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_YAW_90)
+#define HAL_MAG_PROBE_LIST PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_NONE); \
+									PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_NONE)
 									
 #define ALLOW_ARM_NO_COMPASS					1
 #define HAL_PROBE_EXTERNAL_I2C_COMPASSES 	1
 
 //WIFI
-//#define HAL_ESP32_WIFI					1	//1-TCP, 2-UDP, comment this line = without wifi
-//#define WIFI_SSID					"ardupilot-empty"
-//#define WIFI_PWD					"ardupilot-empty"
+#define HAL_ESP32_WIFI					1	//1-TCP, 2-UDP, comment this line = without wifi
+#define WIFI_SSID					"ardupilot-empty"
+#define WIFI_PWD					"ardupilot-empty"
 
 //UARTs
 #define HAL_ESP32_UART_DEVICES \
