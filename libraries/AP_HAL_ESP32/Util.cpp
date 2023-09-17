@@ -199,7 +199,7 @@ void Util::toneAlarm_set_buzzer_tone(float frequency, float volume, uint32_t dur
 		ledc_update_duty(_toneAlarm_pwm_group.channel_config.speed_mode, _toneAlarm_pwm_group.channel_config.channel);    
     }
 }
-#endif // HAL_PWM_ALARM
+#endif // AP_NOTIFY_TONEALARM_ENABLED
 
 /*
   set HW RTC in UTC microseconds

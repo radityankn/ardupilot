@@ -77,8 +77,10 @@
 #define HAL_INS_BMI160_NAME 		"bmi160"
 #define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_YAW_90); \
 											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180)
-//#define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_NONE); \
-//											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180_YAW_90)
+/*											
+#define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_NONE); \
+											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180_YAW_90)
+*/
 
 //I2C Buses
 #define HAL_ESP32_I2C_BUSES				{.port=I2C_NUM_0, .sda=GPIO_NUM_21, .scl=GPIO_NUM_22, .speed=400*KHZ, .internal=true, .soft=true}
@@ -105,8 +107,10 @@
 #define HAL_COMPASS_MAX_SENSORS				3
 #define HAL_MAG_PROBE_LIST PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_YAW_270); \
 									PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_YAW_90)
-//#define HAL_MAG_PROBE_LIST PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_NONE); \
-//									PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_NONE)
+/*									
+#define HAL_MAG_PROBE_LIST PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_NONE); \
+									PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_NONE)
+*/
 									
 #define ALLOW_ARM_NO_COMPASS					1
 #define HAL_PROBE_EXTERNAL_I2C_COMPASSES 	1
@@ -120,7 +124,7 @@
 #define HAL_ESP32_UART_DEVICES \
     {.port=UART_NUM_0, .rx=GPIO_NUM_3 , .tx=GPIO_NUM_1 },\
     {.port=UART_NUM_1, .rx=GPIO_NUM_4, .tx=GPIO_NUM_16}, \
-    {.port=UART_NUM_2, .rx=GPIO_NUM_35, .tx=GPIO_NUM_19}
+    {.port=UART_NUM_2, .rx=GPIO_NUM_15, .tx=GPIO_NUM_12}
 
 //ADC
 #define HAL_DISABLE_ADC_DRIVER				1
@@ -167,7 +171,7 @@
 #define HAL_BOARD_LOG_DIRECTORY				"/SDCARD/APM/LOGS"
 #define HAL_BOARD_TERRAIN_DIRECTORY			"/SDCARD/APM/TERRAIN"
 
-#define HAL_LOGGING_BACKENDS_DEFAULT			1
-#define AP_NOTIFY_TONEALARM_ENABLED			1			//this definition is for activating ToneAlarm
-#define HAL_PWM_BUZZER_PIN				14			//pin of where your ToneAlarm buzzer is			
+#define HAL_LOGGING_BACKENDS_DEFAULT			0
+//#define AP_NOTIFY_TONEALARM_ENABLED			1			//this definition is for activating ToneAlarm
+//#define HAL_PWM_BUZZER_PIN				14			//pin of where your ToneAlarm buzzer is			
 
