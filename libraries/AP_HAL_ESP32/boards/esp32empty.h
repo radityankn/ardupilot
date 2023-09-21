@@ -153,6 +153,7 @@
 //RMT pin number
 #define HAL_ESP32_RMT_RX_PIN_NUMBER			-1
 
+
 //SD CARD
 // Do u want to use mmc or spi mode for the sd card, this is board specific ,
 //  as mmc uses specific pins but is quicker,
@@ -175,6 +176,6 @@
 #define HAL_LOGGING_BACKENDS_DEFAULT		1
 //#define AP_NOTIFY_TONEALARM_ENABLED			1			//this definition is for activating ToneAlarm
 //#define HAL_PWM_BUZZER_PIN						14			//pin of where your ToneAlarm buzzer is	
-//#define AP_SBUSOUTPUT_ENABLED					TRUE
-//#define SBUS_OUT_PIN								GPIO_NUM_21		
+#define AP_SBUSOUTPUT_ENABLED					TRUE
+#define SBUS_OUT_PIN								GPIO_NUM_21		
 

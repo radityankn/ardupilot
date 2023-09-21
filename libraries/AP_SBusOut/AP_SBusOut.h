@@ -23,7 +23,7 @@ public:
 
     static const struct AP_Param::GroupInfo var_info[];
 
-    void update();
+    uint8_t* update();
 
     // public format function for use by IOMCU
     static void sbus_format_frame(uint16_t *channels, uint8_t num_channels, uint8_t buffer[25]);

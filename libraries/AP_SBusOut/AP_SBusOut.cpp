@@ -124,23 +124,25 @@ void AP_SBusOut::sbus_format_frame(uint16_t *channels, uint8_t num_channels, uin
  * build and send sbus1 frame representing first 16 servo channels
  * input arg is pointer to uart
  */
-void
+uint8_t*
 AP_SBusOut::update()
 {
+    uint8_t buffer[SBUS_BSIZE];
+
     if (!initialised) {
         initialised = true;
         init();
     }
 
     if (sbus1_uart == nullptr) {
-        return;
+        return buffer;
     }
 
     // constrain output rate using sbus_frame_interval
     static uint32_t last_micros = 0;
     uint32_t now = AP_HAL::micros();
     if ((now - last_micros) <= sbus_frame_interval) {
-        return;
+        return buffer;
     }
 
     last_micros = now;
@@ -156,7 +158,7 @@ AP_SBusOut::update()
         }
         channels[i] = c->get_output_pwm();
     }
-    uint8_t buffer[SBUS_BSIZE];
+    
     sbus_format_frame(channels, nchan, buffer);
 
 #if SBUS_DEBUG
@@ -170,6 +172,8 @@ AP_SBusOut::update()
     hal.gpio->pinMode(55, HAL_GPIO_OUTPUT);
     hal.gpio->write(55, 0);
 #endif
+
+    return buffer;
 }
 
 void AP_SBusOut::init() {

@@ -25,6 +25,21 @@
 
 #if AP_SBUSOUTPUT_ENABLED
 #include <AP_SBusOut/AP_SBusOut.h>
+#include "driver/rmt.h"
+
+typedef struct {
+  rmt_item32_t items[6];
+  int item_index;
+} uart_tx_buffer_t;
+
+
+typedef struct {
+  rmt_config_t channel_config;
+} uart_tx_config_t;
+
+uart_tx_config_t* config = new uart_tx_config_t;
+uint32_t baudrate;
+
 #endif
 
 #include "driver/rtc_io.h"
@@ -64,6 +79,25 @@ void RCOutput::init()
     printf("RCOutput::init() - channels available: %d \n",(int)MAX_CHANNELS);
     printf("oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo\n");
 
+    #if AP_SBUSOUTPUT_ENABLED
+    int clk_div = 80; //APB_CLK_FREQ/50/baudrate;
+    config->channel_config.gpio_num = SBUS_OUT_PIN;
+    config->channel_config.rmt_mode = RMT_MODE_TX;
+    config->channel_config.clk_div = clk_div;
+    config->channel_config.channel = RMT_CHANNEL_2;
+    config->channel_config.mem_block_num = 1;
+    //config->channel_config.flags = RMT_CHANNEL_FLAGS_INVERT_SIG;
+    config->channel_config.tx_config.idle_level = rmt_idle_level_t(1);
+    config->channel_config.tx_config.carrier_en = 0;
+    //config->channel_config.tx_config.loop_count = 0;
+    config->channel_config.tx_config.idle_output_en = 1;
+    config->channel_config.tx_config.loop_en = 0;
+    rmt_config(&config->channel_config);
+    rmt_driver_install(config->channel_config.channel, 0, 0);
+
+
+
+    #else
     static const mcpwm_io_signals_t signals[] = {
         MCPWM0A,
         MCPWM0B,
@@ -113,6 +147,7 @@ void RCOutput::init()
         mcpwm_init(unit, timer, &pwm_config);
         mcpwm_start(unit, timer);
     }
+    #endif
     _initialized = true;
 }
 
@@ -218,6 +253,129 @@ void RCOutput::push()
 
     bool safety_on = hal.util->safety_switch_state() == AP_HAL::Util::SAFETY_DISARMED;
 
+    #if AP_SBUSOUTPUT_ENABLED
+    AP_SBusOut sbus;
+    uint32_t* data = sbus.update();
+    uart_tx_buffer_t *buffer = new uart_tx_buffer_t;
+
+    int delay = 8000; //(APB_CLK_FREQ/(APB_CLK_FREQ/50/baudrate))/baudrate;
+    int parity_counter = 0;
+    buffer->items[0].level0 = 0;
+    buffer->items[0].duration0 = delay;
+    //bit 0
+    if ((data & 0b00000001) == 0b00000001) {
+      buffer->items[0].level1 = 1;
+      buffer->items[0].duration1 = delay;
+      parity_counter++;
+      ESP_LOGI("bits","1");
+    }
+    else {
+      buffer->items[0].level1 = 0;
+      buffer->items[0].duration1 = delay;
+      ESP_LOGI("bits","0");
+    }
+    //bit 1
+    if ((data & 0b00000010) == 0b00000010) {
+      buffer->items[1].level0 = 1;
+      buffer->items[1].duration0 = delay;
+      parity_counter++;
+      ESP_LOGI("bits","1");
+    }
+    else {
+      buffer->items[1].level0 = 0;
+      buffer->items[1].duration0 = delay;
+      ESP_LOGI("bits","0");
+    }
+    //bit 2
+    if ((data & 0b00000100) == 0b00000100) {
+      buffer->items[1].level1 = 1;
+      buffer->items[1].duration1 = delay;
+      parity_counter++;
+      ESP_LOGI("bits","1");
+    }
+    else {
+      buffer->items[1].level1 = 0;
+      buffer->items[1].duration1 = delay;
+      ESP_LOGI("bits","0");
+    }
+    //bit 3
+    if ((data & 0b00001000) == 0b00001000) {
+      buffer->items[2].level0 = 1;
+      buffer->items[2].duration0 = delay;
+      parity_counter++;
+      ESP_LOGI("bits","1");
+    }
+    else {
+      buffer->items[2].level0 = 0;
+      buffer->items[2].duration0 = delay;
+      ESP_LOGI("bits","0");
+    }
+    //bit 4
+    if ((data & 0b00010000) == 0b00010000) {
+      buffer->items[2].level1 = 1;
+      buffer->items[2].duration1 = delay;
+      parity_counter++;
+      ESP_LOGI("bits","1");
+    }
+    else {
+      buffer->items[2].level1 = 0;
+      buffer->items[2].duration1 = delay;
+      ESP_LOGI("bits","0");
+    }
+    //bit 5
+    if ((data & 0b00100000) == 0b00100000) {
+      buffer->items[3].level0 = 1;
+      buffer->items[3].duration0 = delay;
+      parity_counter++;
+      ESP_LOGI("bits","1");
+    }
+    else {
+      buffer->items[3].level0 = 0;
+      buffer->items[3].duration0 = delay;
+      ESP_LOGI("bits","0");
+    }
+    //bit 6
+    if ((data & 0b01000000) == 0b01000000) {
+      buffer->items[3].level1 = 1;
+      buffer->items[3].duration1 = delay;
+      parity_counter++;
+      ESP_LOGI("bits","1");
+    }
+    else {
+      buffer->items[3].level1 = 0;
+      buffer->items[3].duration1 = delay;
+      ESP_LOGI("bits","0");
+    }
+    //bit 7
+    if ((data & 0b10000000) == 0b10000000) {
+      buffer->items[4].level0 = 1;
+      buffer->items[4].duration0 = delay;
+      parity_counter++;
+      ESP_LOGI("bits","1");
+    }
+    else {
+      buffer->items[4].level0 = 0;
+      buffer->items[4].duration0 = delay;
+      ESP_LOGI("bits","0");
+    }
+    //parity
+    if (parity_counter%2 == 0) {
+      buffer->items[4].level1 = 1;
+      buffer->items[4].duration1 = delay;
+    }
+    else {
+      buffer->items[4].level1 = 0;
+      buffer->items[4].duration1 = delay;
+    }
+    buffer->items[5].level0 = 1;
+    buffer->items[5].duration0 = delay;
+    buffer->items[5].level1 = 1;
+    buffer->items[5].duration1 = delay;
+    for (int i = 0; i < 6; i++) {
+        rmt_write_items(config->channel_config.channel, &buffer->items[i], 1, 1);
+    }
+
+    #else
     for (uint8_t i = 0; i < MAX_CHANNELS; i++) {
         if ((1U<<i) & _pending_mask) {
             uint32_t period_us = _pending[i];
@@ -230,9 +388,8 @@ void RCOutput::push()
             write_int(i, period_us);
         }
     }
-#if AP_SBUSOUTPUT_ENABLED
-	sbus->update();
-#endif
+    #endif
+
     _corked = false;
 }
 
@@ -246,6 +403,7 @@ void RCOutput::write_int(uint8_t chan, uint16_t period_us)
     if (!_initialized || chan >= MAX_CHANNELS) {
         return;
     }
+
 
     bool safety_on = hal.util->safety_switch_state() == AP_HAL::Util::SAFETY_DISARMED;
     if (safety_on && !(safety_mask & (1U<<(chan)))) {
