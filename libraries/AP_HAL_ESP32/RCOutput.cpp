@@ -23,6 +23,10 @@
 #include <AP_Math/AP_Math.h>
 #include <AP_BoardConfig/AP_BoardConfig.h>
 
+#if AP_SBUSOUTPUT_ENABLED
+#include <AP_SBusOut/AP_SBusOut.h>
+#endif
+
 #include "driver/rtc_io.h"
 #include "driver/gpio.h"
 
@@ -109,7 +113,6 @@ void RCOutput::init()
         mcpwm_init(unit, timer, &pwm_config);
         mcpwm_start(unit, timer);
     }
-
     _initialized = true;
 }
 
@@ -227,7 +230,9 @@ void RCOutput::push()
             write_int(i, period_us);
         }
     }
-
+#if AP_SBUSOUTPUT_ENABLED
+	sbus->update();
+#endif
     _corked = false;
 }
 

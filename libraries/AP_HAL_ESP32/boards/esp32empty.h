@@ -71,42 +71,43 @@
 #define DEFAULT_SERIAL9_BAUD				(115200/1000)
 
 //IMUs
-#define INS_AUX_INSTANCE			2
+#define INS_AUX_INSTANCE			3
 #define HAL_INS_DEFAULT				HAL_INS_MPU9250_SPI
 #define HAL_INS_MPU9250_NAME 		"mpu9250"
-#define HAL_INS_BMI160_NAME 		"bmi160"
-#define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_YAW_90); \
-											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180)
+#define HAL_INS_MPU6500_NAME  	"mpu6500"
+#define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_NONE);\
+											PROBE_IMU_SPI(Invensense, HAL_INS_MPU6500_NAME, ROTATION_NONE);
 /*											
 #define HAL_INS_PROBE_LIST			PROBE_IMU_SPI(Invensense, HAL_INS_MPU9250_NAME, ROTATION_NONE); \
 											PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180_YAW_90)
 */
 
 //I2C Buses
-#define HAL_ESP32_I2C_BUSES				{.port=I2C_NUM_0, .sda=GPIO_NUM_21, .scl=GPIO_NUM_22, .speed=400*KHZ, .internal=true, .soft=true}
-
+#define HAL_ESP32_I2C_BUSES				{.port=I2C_NUM_0, .sda=GPIO_NUM_32, .scl=GPIO_NUM_13, .speed=400*KHZ, .internal=true}
+//													{.port=I2C_NUM_1, .sda=GPIO_NUM_15, .scl=GPIO_NUM_17, .speed=400*KHZ, .internal=true}
 //SPI Buses
-#define HAL_ESP32_SPI_BUSES				{.host=VSPI_HOST, .dma_ch=1, .mosi=GPIO_NUM_23, .miso=GPIO_NUM_19, .sclk=GPIO_NUM_18} 	// mosi/miso swapped
+#define HAL_ESP32_SPI_BUSES				{.host=VSPI_HOST, .dma_ch=3, .mosi=GPIO_NUM_18, .miso=GPIO_NUM_5, .sclk=GPIO_NUM_19}
 
 //SPI Devices
-#define HAL_ESP32_SPI_DEVICES				{.name=HAL_INS_MPU9250_NAME, .bus=0, .device=0, .cs=GPIO_NUM_17, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ}, \
-												   {.name=HAL_INS_BMI160_NAME, .bus=0, .device=1, .cs=GPIO_NUM_5, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ}
-
+#define HAL_ESP32_SPI_DEVICES				{.name=HAL_INS_MPU9250_NAME, .bus=0, .device=1, .cs=GPIO_NUM_16, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ},\
+													{.name=HAL_INS_MPU6500_NAME, .bus=0, .device=0, .cs=GPIO_NUM_23, .mode=0, .lspeed=4*MHZ, .hspeed=4*MHZ} 
+													
 //RCIN
-#define HAL_ESP32_RCIN					GPIO_NUM_13
+#define HAL_ESP32_RCIN					GPIO_NUM_22
 
 //RCOUT
-#define HAL_ESP32_RCOUT					{GPIO_NUM_32, GPIO_NUM_33, GPIO_NUM_25, GPIO_NUM_26, GPIO_NUM_27}
+#define HAL_ESP32_RCOUT					{GPIO_NUM_14, GPIO_NUM_15, GPIO_NUM_17, GPIO_NUM_21}
 
 //BAROMETER
 #define HAL_BARO_ALLOW_INIT_NO_BARO			1
 #define AP_BARO_BMP280_ENABLED				1
-#define HAL_BARO_PROBE_LIST PROBE_BARO_I2C(BMP280,0,0x76)
+#define HAL_BARO_PROBE_LIST PROBE_BARO_I2C(BMP280,0,0x76); \
+									 PROBE_BARO_I2C(BMP280,0,0x76);
 
 //COMPASS
 #define HAL_COMPASS_MAX_SENSORS				3
-#define HAL_MAG_PROBE_LIST PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_YAW_270); \
-									PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_YAW_90)
+#define HAL_MAG_PROBE_LIST PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_YAW_90);\
+   								PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_YAW_90);
 /*									
 #define HAL_MAG_PROBE_LIST PROBE_MAG_I2C(QMC5883L, 0, 0x0D, false, ROTATION_NONE); \
 									PROBE_MAG_IMU(AK8963, mpu9250, 0, ROTATION_NONE)
@@ -123,8 +124,8 @@
 //UARTs
 #define HAL_ESP32_UART_DEVICES \
     {.port=UART_NUM_0, .rx=GPIO_NUM_3 , .tx=GPIO_NUM_1 },\
-    {.port=UART_NUM_1, .rx=GPIO_NUM_4, .tx=GPIO_NUM_16}, \
-    {.port=UART_NUM_2, .rx=GPIO_NUM_15, .tx=GPIO_NUM_12}
+    {.port=UART_NUM_1, .rx=GPIO_NUM_35, .tx=GPIO_NUM_12}, \
+    {.port=UART_NUM_2, .rx=GPIO_NUM_34, .tx=GPIO_NUM_4}
 
 //ADC
 #define HAL_DISABLE_ADC_DRIVER				1
@@ -138,11 +139,11 @@
 */
 
 //LED
-#define DEFAULT_NTF_LED_TYPES				Notify_LED_None
+#define DEFAULT_NTF_LED_TYPES				Notify_LED_Board
 #define HAL_GPIO_LED_ON                     1
 #define HAL_GPIO_LED_OFF                    0
-//#define HAL_GPIO_A_LED_PIN                  2
-//#define HAL_GPIO_B_LED_PIN                  27
+#define HAL_GPIO_A_LED_PIN                  0
+#define HAL_GPIO_B_LED_PIN                  2
 
 //Buzzer Pin
 //#define BUZZER_ENABLE_DEFAULT		 1		//Enabling internal buzzer, see AP_Notify.cpp
@@ -157,21 +158,23 @@
 //  as mmc uses specific pins but is quicker,
 // and spi is more flexible pinouts....  dont forget vspi/hspi should be selected to NOT conflict with HAL_ESP32_SPI_BUSES
 
-//#define HAL_ESP32_SDCARD //after enabled, uncomment one of below
+#define HAL_ESP32_SDCARD //after enabled, uncomment one of below
 //#define HAL_ESP32_SDMMC
-//#define HAL_ESP32_SDSPI				{.host=VSPI_HOST, .dma_ch=2, .mosi=GPIO_NUM_2, .miso=GPIO_NUM_15, .sclk=GPIO_NUM_26, .cs=GPIO_NUM_21}
+#define HAL_ESP32_SDSPI				{.host=HSPI_HOST, .dma_ch=3, .mosi=GPIO_NUM_25, .miso=GPIO_NUM_27, .sclk=GPIO_NUM_26, .cs=GPIO_NUM_33}
 
-//#define HAL_LOGGING_FILESYSTEM_ENABLED		0
-#define HAVE_FILESYSTEM_SUPPORT					0
-#define HAL_LOGGING_DATAFLASH_ENABLED			0
-#define HAL_LOGGING_MAVLINK_ENABLED			0
+#define HAL_LOGGING_FILESYSTEM_ENABLED		1
+#define HAVE_FILESYSTEM_SUPPORT				1
+#define HAL_LOGGING_DATAFLASH_ENABLED		1
+#define HAL_LOGGING_MAVLINK_ENABLED			1
 
 #define HAL_BOARD_LOG_DIRECTORY				"/SDCARD/APM/LOGS"
 #define HAL_BOARD_STORAGE_DIRECTORY			"/SDCARD/APM/STORAGE"
 #define HAL_BOARD_LOG_DIRECTORY				"/SDCARD/APM/LOGS"
 #define HAL_BOARD_TERRAIN_DIRECTORY			"/SDCARD/APM/TERRAIN"
 
-#define HAL_LOGGING_BACKENDS_DEFAULT			0
+#define HAL_LOGGING_BACKENDS_DEFAULT		1
 //#define AP_NOTIFY_TONEALARM_ENABLED			1			//this definition is for activating ToneAlarm
-//#define HAL_PWM_BUZZER_PIN				14			//pin of where your ToneAlarm buzzer is			
+//#define HAL_PWM_BUZZER_PIN						14			//pin of where your ToneAlarm buzzer is	
+//#define AP_SBUSOUTPUT_ENABLED					TRUE
+//#define SBUS_OUT_PIN								GPIO_NUM_21		
 

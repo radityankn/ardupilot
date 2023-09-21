@@ -147,6 +147,7 @@ AP_InertialSensor_Backend *AP_InertialSensor_Invensense::probe(AP_InertialSensor
     }
     if (sensor->_mpu_type == Invensense_MPU9250) {
         sensor->_id = HAL_INS_MPU9250_SPI;
+        printf("MPU9250 Detected!");  
     } else if (sensor->_mpu_type == Invensense_MPU6500) {
         sensor->_id = HAL_INS_MPU6500;
     } else {
@@ -164,6 +165,12 @@ bool AP_InertialSensor_Invensense::_init()
 #endif
 
     bool success = _hardware_init();
+    if (success == TRUE) {
+		printf("FAIL!");    
+    }
+    else {
+		printf("SUCCESS!");    
+    }
 
     return success;
 }
@@ -959,6 +966,8 @@ void AP_InertialSensor_Invensense::_set_filter_register(void)
 bool AP_InertialSensor_Invensense::_check_whoami(void)
 {
     uint8_t whoami = _register_read(MPUREG_WHOAMI);
+    printf("%d", whoami);
+    printf("\n");
     switch (whoami) {
     case MPU_WHOAMI_6000:
         _mpu_type = Invensense_MPU6000;
@@ -995,6 +1004,7 @@ bool AP_InertialSensor_Invensense::_check_whoami(void)
 
 bool AP_InertialSensor_Invensense::_hardware_init(void)
 {
+	 printf("begin HW initialization!");
     WITH_SEMAPHORE(_dev->get_semaphore());
 
     // setup for register checking. We check much less often on I2C
@@ -1005,6 +1015,7 @@ bool AP_InertialSensor_Invensense::_hardware_init(void)
     _dev->set_speed(AP_HAL::Device::SPEED_LOW);
 
     if (!_check_whoami()) {
+    		printf("WHOAMI FAIL!\n");
         return false;
     }
 
@@ -1069,6 +1080,7 @@ bool AP_InertialSensor_Invensense::_hardware_init(void)
 
     if (tries == 5) {
         DEV_PRINTF("Failed to boot Invensense 5 times\n");
+        printf("Failed to boot Invensense 5 times\n");
         return false;
     }
 
