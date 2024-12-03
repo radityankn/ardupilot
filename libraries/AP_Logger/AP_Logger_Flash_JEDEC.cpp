@@ -156,7 +156,7 @@ bool AP_Logger_Flash_JEDEC::getSectorCount(void)
         break;
     default:
         hal.scheduler->delay(2000);
-        printf("Unknown SPI Flash 0x%08x\n", id);
+        printf("Unknown SPI Flash 0x%08lx\n", id);
         return false;
     }
 
@@ -164,7 +164,7 @@ bool AP_Logger_Flash_JEDEC::getSectorCount(void)
     df_NumPages = blocks * df_PagePerBlock;
     erase_cmd = JEDEC_BLOCK64_ERASE;
 
-    printf("SPI Flash 0x%08x found pages=%u erase=%uk\n",
+    printf("SPI Flash 0x%08lx found pages=%lu erase=%uk\n",
            id, df_NumPages, (df_PagePerBlock * (uint32_t)df_PageSize)/1024);
     return true;
 

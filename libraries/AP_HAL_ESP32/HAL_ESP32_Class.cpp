@@ -17,6 +17,7 @@
 #include <AP_HAL_Empty/AP_HAL_Empty_Private.h>
 
 #include "HAL_ESP32_Class.h"
+#include "AnalogIn.h"
 #include "Scheduler.h"
 #include "I2CDevice.h"
 #include "SPIDevice.h"
@@ -27,7 +28,6 @@
 #include "RCOutput.h"
 #include "GPIO.h"
 #include "Storage.h"
-#include "AnalogIn.h"
 #include "Util.h"
 #if AP_SIM_ENABLED
 #include <AP_HAL/SIMState.h>

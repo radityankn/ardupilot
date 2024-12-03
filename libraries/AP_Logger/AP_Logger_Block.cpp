@@ -929,14 +929,14 @@ void AP_Logger_Block::flash_test()
     const uint32_t pages_to_check = 128;
     for (uint32_t i=1; i<=pages_to_check; i++) {
         if ((i-1) % df_PagePerBlock == 0) {
-            printf("Block erase %u\n", get_block(i));
+            printf("Block erase %lu\n", get_block(i));
             SectorErase(get_block(i));
         }
         memset(buffer, uint8_t(i), df_PageSize);
         if (i<5) {
             printf("Flash fill 0x%x\n", uint8_t(i));
         } else if (i==5) {
-            printf("Flash fill pages 5-%u\n", pages_to_check);
+            printf("Flash fill pages 5-%lu\n", pages_to_check);
         }
         BufferToPage(i);
     }
@@ -944,7 +944,7 @@ void AP_Logger_Block::flash_test()
         if (i<5) {
             printf("Flash check 0x%x\n", uint8_t(i));
         } else if (i==5) {
-            printf("Flash check pages 5-%u\n", pages_to_check);
+            printf("Flash check pages 5-%lu\n", pages_to_check);
         }
         PageToBuffer(i);
         uint32_t bad_bytes = 0;

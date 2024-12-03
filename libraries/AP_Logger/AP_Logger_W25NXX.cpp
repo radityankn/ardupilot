@@ -147,13 +147,13 @@ bool AP_Logger_W25NXX::getSectorCount(void)
 
     default:
         hal.scheduler->delay(2000);
-        printf("Unknown SPI Flash 0x%08x\n", id);
+        printf("Unknown SPI Flash 0x%08lx\n", id);
         return false;
     }
 
     df_NumPages = flash_blockNum * df_PagePerBlock;
 
-    printf("SPI Flash 0x%08x found pages=%u\n", id, df_NumPages);
+    printf("SPI Flash 0x%08lx found pages=%lu\n", id, df_NumPages);
     return true;
 }
 
