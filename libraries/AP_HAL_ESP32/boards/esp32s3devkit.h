@@ -37,45 +37,30 @@
 
 #define HAL_ESP32_BOARD_NAME "esp32s3devkit"
 
-#define HAL_ESP32_RMT_RX_PIN_NUMBER GPIO_NUM_14
+#define HAL_ESP32_RMT_RX_PIN_NUMBER GPIO_NUM_38
 
 //#define CONFIG_HAL_BOARD 12
 //#define HAL_BOARD_ESP32 12
 #define AP_INERTIALSENSOR_ENABLED 1
-//INS choices:
-#define HAL_INS_DEFAULT HAL_INS_MPU6500_SPI
-#define HAL_INS_MPU6500_NAME "mpu6500"
-
-// or this:
-//#define HAL_INS_DEFAULT HAL_INS_ICM20XXX_I2C
-//#define HAL_INS_ICM20XXX_I2C_BUS 0
-//#define HAL_INS_ICM20XXX_I2C_ADDR (0x68)
+#define HAL_INS_DEFAULT HAL_INS_BMI160_SPI
+#define HAL_INS_BMI160_NAME "bmi160"
 
 // BARO choices:
-#define HAL_BARO_DEFAULT HAL_BARO_BMP280_I2C
+#define HAL_BARO_DEFAULT HAL_BARO_BMP280_SPI
 #define HAL_BARO_BMP280_NAME "bmp280"
-// or one of these:
-//#define HAL_BARO_DEFAULT HAL_BARO_MS5837_I2C
-// or: GPIO 34
-//#define HAL_BARO_ANALOG_PIN (6)
 
 // MAG/COMPASS choices:
-//#define HAL_COMPASS_DEFAULT HAL_COMPASS_AK8963_MPU9250
-// or others:
-#define AP_COMPASS_QMC5883L_ENABLED TRUE
-#define HAL_COMPASS_QMC5883L_I2C_ADDR (0xD0)
-#define HAL_COMPASS_AK09916_I2C_BUS 0
-//#define HAL_COMPASS_AK09916_I2C_ADDR (0x0C)
-//#define HAL_COMPASS_MAX_SENSORS 3
+#define AP_COMPASS_HMC5843_ENABLED TRUE
+#define HAL_COMPASS_HMC5843_I2C_ADDR (0x1E)
+#define HAL_COMPASS_HMC5843_I2C_BUS 0
+#define HAL_COMPASS_MAX_SENSORS 3
 
 // IMU probing:
-#define HAL_INS_PROBE_LIST PROBE_IMU_SPI(Invensense, HAL_INS_MPU6500_NAME, ROTATION_NONE)
+#define HAL_INS_PROBE_LIST PROBE_IMU_SPI(BMI160, HAL_INS_BMI160_NAME, ROTATION_ROLL_180_YAW_270)
 // MAG/COMPASS probing:
-#define HAL_MAG_PROBE_LIST ADD_BACKEND(DRIVER_QMC5883L, AP_Compass_QMC5883L::probe(GET_I2C_DEVICE(0, 0xD0), 0, ROTATION_NONE))
-//#define HAL_MAG_PROBE_LIST PROBE_MAG_SPI(Invensense, "mpu9250")
+#define HAL_MAG_PROBE_LIST ADD_BACKEND(DRIVER_HMC5843, AP_Compass_HMC5843::probe(GET_I2C_DEVICE(0, 0x1E), 0, ROTATION_NONE))
 // BARO probing:
-#define HAL_BARO_PROBE_LIST PROBE_BARO_I2C(BMP280, 0, 0x76)
-//#define HAL_BARO_PROBE_LIST PROBE_BARO_SPI(BMP280, "bmp280")
+#define HAL_BARO_PROBE_LIST PROBE_BARO_SPI(BMP280, "bmp280")
 
 // allow boot without a baro
 #define HAL_BARO_ALLOW_INIT_NO_BARO 1
@@ -112,11 +97,6 @@
 //#define FSDEBUG 1
 //#define BUSDEBUG 1
 
-//#define HAL_INS_PROBE_LIST PROBE_IMU_SPI( Invensense, HAL_INS_MPU9250_NAME, ROTATION_NONE)
-//#define HAL_INS_PROBE_LIST PROBE_IMU_SPI( Invensense, HAL_INS_MPU9250_NAME, ROTATION_ROLL_180)
-// MAG/COMPASS probing:
-//#define AP_COMPASS_AK8963_ENABLED TRUE
-//#define HAL_MAG_PROBE_LIST ADD_BACKEND(DRIVER_AK8963, AP_Compass_AK8963::probe(0, ROTATION_NONE))
 #define HAL_PROBE_EXTERNAL_I2C_COMPASSES 1
 
 // 2 use udp, 1 use tcp...  for udp,client needs to connect as UDPCL in missionplanner etc to 192.168.4.1 port 14550
@@ -140,18 +120,19 @@
 
 //RCOUT which pins are used?
 
-#define HAL_ESP32_RCOUT { GPIO_NUM_11,GPIO_NUM_10, GPIO_NUM_9, GPIO_NUM_8, GPIO_NUM_7, GPIO_NUM_6 }
+#define HAL_ESP32_RCOUT { GPIO_NUM_39, GPIO_NUM_40, GPIO_NUM_41, GPIO_NUM_42, GPIO_NUM_2, GPIO_NUM_1 }
 
 // SPI BUS setup, including gpio, dma, etc
 // note... we use 'vspi' for the bmp280 and mpu9250
 #define HAL_ESP32_SPI_BUSES \
-    {.host=SPI3_HOST, .dma_ch=SPI_DMA_CH_AUTO, .mosi=GPIO_NUM_18, .miso=GPIO_NUM_17, .sclk=GPIO_NUM_46}
+    {.host=SPI3_HOST, .dma_ch=SPI_DMA_CH_AUTO, .mosi=GPIO_NUM_9, .miso=GPIO_NUM_8, .sclk=GPIO_NUM_10}
 // tip:  VSPI_HOST  is an alternative name for esp's SPI3
 //#define HAL_ESP32_SPI_BUSES {}
 
 // SPI per-device setup, including speeds, etc.
 #define HAL_ESP32_SPI_DEVICES \
-    {.name="mpu6500", .bus=0, .device=0, .cs=GPIO_NUM_9,  .mode = 0, .lspeed=2*MHZ, .hspeed=8*MHZ}
+    {.name="bmi160", .bus=0, .device=0, .cs=GPIO_NUM_4,  .mode = 0, .lspeed=2*MHZ, .hspeed=8*MHZ}, \
+	{.name="bmp280", .bus=0, .device=1, .cs=GPIO_NUM_46,  .mode = 0, .lspeed=2*MHZ, .hspeed=8*MHZ}
 //#define HAL_ESP32_SPI_DEVICES {}
 
 //I2C bus list
@@ -167,8 +148,8 @@
 //HARDWARE UARTS
 #define HAL_ESP32_UART_DEVICES \
   {.port=UART_NUM_0, .rx=GPIO_NUM_44, .tx=GPIO_NUM_43 }, \
-  {.port=UART_NUM_1, .rx=GPIO_NUM_13, .tx=GPIO_NUM_12 }, \
-  {.port=UART_NUM_2, .rx=GPIO_NUM_20, .tx=GPIO_NUM_21}
+  {.port=UART_NUM_1, .rx=GPIO_NUM_36, .tx=GPIO_NUM_35 }, \
+  {.port=UART_NUM_2, .rx=GPIO_NUM_38, .tx=GPIO_NUM_37}
 
 #define HAVE_FILESYSTEM_SUPPORT 1
 
@@ -178,7 +159,7 @@
 // and spi is more flexible pinouts....  dont forget vspi/hspi should be selected to NOT conflict with SPI_BUSES above
 //#define HAL_ESP32_SDSPI {.host=VSPI_HOST, .dma_ch=2, .mosi=GPIO_NUM_2, .miso=GPIO_NUM_15, .sclk=GPIO_NUM_14, .cs=GPIO_NUM_21}
 
-#define HAL_ESP32_SDCARD 1
+#define HAL_ESP32_SDCARD 0
 #define LOGGER_MAVLINK_SUPPORT 1
 #define HAL_OS_POSIX_IO 1
 
@@ -197,5 +178,5 @@
 #define AP_RCPROTOCOL_ENABLED 1
 
 #define AP_FILESYSTEM_ESP32_ENABLED 1
-#define AP_SCRIPTING_ENABLED 0
+#define AP_SCRIPTING_ENABLED 1
 //#define HAL_USE_EMPTY_STORAGE 1
